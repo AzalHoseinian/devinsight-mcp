@@ -1,0 +1,18 @@
+[project]
+name = "devinsight-mcp"
+version = "1.0.0"
+description = "An MCP server that gives Claude tools to inspect, analyze, and grade local git repositories"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = ["mcp", "model-context-protocol", "git", "developer-tools", "claude"]
+dependencies = [
+    "mcp[cli]>=1.2.0",
+]
+
+[project.urls]
+Repository = "https://github.com/AzamHosseinian/devinsight-mcp"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.AzamHosseinian/devinsight-mcp",
+  "description": "Inspect, analyze, and grade local Git repositories: language stats, TODO tracking, git history, large-file detection, an overall health score, and tech-stack fingerprinting.",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/AzamHosseinian/devinsight-mcp",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registry_type": "pypi",
+      "identifier": "devinsight-mcp",
+      "version": "1.0.0",
+      "runtime_hint": "uvx",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
