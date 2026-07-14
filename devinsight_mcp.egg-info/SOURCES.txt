@@ -1,9 +1,0 @@
-LICENSE
-README.md
-pyproject.toml
-server.py
-devinsight_mcp.egg-info/PKG-INFO
-devinsight_mcp.egg-info/SOURCES.txt
-devinsight_mcp.egg-info/dependency_links.txt
-devinsight_mcp.egg-info/requires.txt
-devinsight_mcp.egg-info/top_level.txt
