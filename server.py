@@ -51,6 +51,9 @@ CODE_EXTENSIONS = {
 }
 
 TODO_TAGS = ("TODO", "FIXME", "HACK", "XXX")
+TODO_RE = re.compile(r"\b(" + "|".join(TODO_TAGS) + r")\b")
+
+MAX_LOG_COUNT = 200
 
 # Lock files and binary assets: real project content, but noise in line/size
 # statistics — excluded from _iter_files, which feeds repo_stats, find_todos,
@@ -216,15 +219,14 @@ def find_todos(path: str = ".", max_results: int = 100) -> list[dict]:
         if lines is None:
             continue
         for i, line in enumerate(lines, start=1):
-            for tag in TODO_TAGS:
-                if tag in line:
-                    results.append({
-                        "file": str(file.relative_to(root)),
-                        "line_number": i,
-                        "tag": tag,
-                        "text": line.strip()[:200],
-                    })
-                    break
+            match = TODO_RE.search(line)
+            if match:
+                results.append({
+                    "file": str(file.relative_to(root)),
+                    "line_number": i,
+                    "tag": match.group(1),
+                    "text": line.strip()[:200],
+                })
             if len(results) >= max_results:
                 return results
     return results
@@ -247,6 +249,8 @@ def git_log_summary(path: str = ".", count: int = 10) -> dict:
     if not root.exists():
         return {"error": f"Path does not exist: {root}"}
 
+    count = max(1, min(count, MAX_LOG_COUNT))
+
     try:
         raw = subprocess.run(
             [
@@ -258,7 +262,7 @@ def git_log_summary(path: str = ".", count: int = 10) -> dict:
             ],
             capture_output=True, text=True, timeout=10, check=True,
         ).stdout
-    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError) as e:
         return {"error": f"Not a git repo, or git is unavailable: {e}"}
 
     commits = []
@@ -388,7 +392,7 @@ def repo_health(path: str = ".", large_file_threshold: int = 300) -> dict:
         if len(lines) >= large_file_threshold:
             large_files.append({"file": str(rel), "lines": len(lines)})
         for line in lines:
-            if any(tag in line for tag in TODO_TAGS):
+            if TODO_RE.search(line):
                 todo_count += 1
 
     large_files.sort(key=lambda x: x["lines"], reverse=True)
@@ -605,7 +609,7 @@ def repo_tree(path: str) -> str:
         for i, entry in enumerate(entries):
             connector = "└── " if i == len(entries) - 1 else "├── "
             lines.append(f"{prefix}{connector}{entry.name}")
-            if entry.is_dir():
+            if entry.is_dir() and not entry.is_symlink():
                 extension = "    " if i == len(entries) - 1 else "│   "
                 walk(entry, prefix + extension)
 
