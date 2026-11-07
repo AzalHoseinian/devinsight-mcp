@@ -7,7 +7,7 @@ requires-python = ">=3.10"
 license = "MIT"
 keywords = ["mcp", "model-context-protocol", "git", "developer-tools", "claude"]
 dependencies = [
-    "mcp[cli]>=1.2.0",
+    "mcp[cli]>=1.2.0,<2",
 ]
 
 [project.urls]
