@@ -1,6 +1,7 @@
 # DevInsight MCP
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/devinsight-mcp.svg)](https://pypi.org/project/devinsight-mcp/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](pyproject.toml)
 [![MCP](https://img.shields.io/badge/MCP-compatible-6E56CF.svg)](https://modelcontextprotocol.io)
 [![Tests](https://github.com/AzalHoseinian/devinsight-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/AzalHoseinian/devinsight-mcp/actions/workflows/test.yml)
@@ -62,14 +63,29 @@ Instead of manually searching your project, you can simply ask:
 
 ## Installation
 
-### Clone the repository
+### Install from PyPI (easiest)
+
+```bash
+pip install devinsight-mcp
+devinsight-mcp        # runs the server over stdio
+```
+
+Or run it without installing, using [uv](https://docs.astral.sh/uv/):
+
+```bash
+uvx devinsight-mcp
+```
+
+### From source (development)
+
+#### Clone the repository
 
 ```bash
 git clone https://github.com/AzalHoseinian/devinsight-mcp.git
 cd devinsight-mcp
 ```
 
-### Create a virtual environment
+#### Create a virtual environment
 
 ```bash
 python3 -m venv .venv
@@ -82,31 +98,20 @@ Windows:
 .venv\Scripts\activate
 ```
 
-### Install dependencies
+#### Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Run the tests
+#### Run the tests
 
 ```bash
 pip install pytest
 python -m pytest -q
 ```
 
-### Install as a command (optional)
-
-From a clone, inside your virtual environment:
-
-```bash
-pip install .
-devinsight-mcp        # runs the server over stdio
-```
-
-(Publishing to PyPI is planned; until then install from the clone.)
-
-### Try it with the MCP Inspector
+#### Try it with the MCP Inspector
 
 The easiest way to test the server standalone is with the official MCP Inspector:
 
@@ -125,6 +130,21 @@ Add DevInsight to your `claude_desktop_config.json`:
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
+**Easiest (uses `uvx`):**
+
+```json
+{
+  "mcpServers": {
+    "devinsight": {
+      "command": "uvx",
+      "args": ["devinsight-mcp"]
+    }
+  }
+}
+```
+
+**From a clone:**
+
 ```json
 {
   "mcpServers": {
@@ -138,7 +158,7 @@ Add DevInsight to your `claude_desktop_config.json`:
 }
 ```
 
-If you installed the command with `pip install .`, you can point Claude Desktop at it instead:
+If you installed the command with `pip install .` or `pip install devinsight-mcp`, you can point Claude Desktop at it instead:
 
 ```json
 {
