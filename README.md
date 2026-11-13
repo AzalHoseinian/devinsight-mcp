@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](pyproject.toml)
 [![MCP](https://img.shields.io/badge/MCP-compatible-6E56CF.svg)](https://modelcontextprotocol.io)
+[![Tests](https://github.com/AzalHoseinian/devinsight-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/AzalHoseinian/devinsight-mcp/actions/workflows/test.yml)
 
 > A lightweight [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that gives Claude the ability to inspect, analyze, and grade local Git repositories.
 
@@ -64,7 +65,7 @@ Instead of manually searching your project, you can simply ask:
 ### Clone the repository
 
 ```bash
-git clone https://github.com/AzamHosseinian/devinsight-mcp.git
+git clone https://github.com/AzalHoseinian/devinsight-mcp.git
 cd devinsight-mcp
 ```
 
@@ -85,6 +86,13 @@ Windows:
 
 ```bash
 pip install -r requirements.txt
+```
+
+### Run the tests
+
+```bash
+pip install pytest
+python -m pytest -q
 ```
 
 ### Try it with the MCP Inspector
@@ -128,6 +136,14 @@ Fully **quit and reopen** Claude Desktop afterwards — it only reads this file 
 or
 
 > Review all TODOs in this repository.
+
+---
+
+## Security notes
+
+DevInsight is **read-only**: it never writes, deletes or executes anything from the repositories it scans. The only external command it runs is `git log` with a fixed argument list.
+
+It can, however, read **any path you give it** that your user account can read, so only connect it to clients you trust. It does not follow symlinked directories when drawing the tree, and it skips lock files and binaries in statistics.
 
 ---
 
@@ -209,6 +225,9 @@ Statistics tools (`repo_stats`, `find_todos`, `find_large_files`, `repo_health`)
 ```text
 devinsight-mcp/
 ├── server.py
+├── tests/
+├── .github/workflows/test.yml
+├── pytest.ini
 ├── requirements.txt
 ├── pyproject.toml
 ├── README.md
@@ -231,6 +250,8 @@ devinsight-mcp/
 - [x] TODO review prompt
 - [x] Overall repo health score
 - [x] Tech stack detection
+- [x] Test suite and CI
+- [ ] Optional allowlist of readable root directories
 - [ ] Lint summary tool
 - [ ] GitHub Issues integration
 - [ ] Dependency vulnerability analysis
