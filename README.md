@@ -95,6 +95,17 @@ pip install pytest
 python -m pytest -q
 ```
 
+### Install as a command (optional)
+
+From a clone, inside your virtual environment:
+
+```bash
+pip install .
+devinsight-mcp        # runs the server over stdio
+```
+
+(Publishing to PyPI is planned; until then install from the clone.)
+
 ### Try it with the MCP Inspector
 
 The easiest way to test the server standalone is with the official MCP Inspector:
@@ -122,6 +133,18 @@ Add DevInsight to your `claude_desktop_config.json`:
       "args": [
         "/absolute/path/to/devinsight-mcp/server.py"
       ]
+    }
+  }
+}
+```
+
+If you installed the command with `pip install .`, you can point Claude Desktop at it instead:
+
+```json
+{
+  "mcpServers": {
+    "devinsight": {
+      "command": "/absolute/path/to/devinsight-mcp/.venv/bin/devinsight-mcp"
     }
   }
 }
@@ -224,7 +247,8 @@ Statistics tools (`repo_stats`, `find_todos`, `find_large_files`, `repo_health`)
 
 ```text
 devinsight-mcp/
-├── server.py
+├── devinsight_mcp.py      # implementation (installed as the `devinsight-mcp` command)
+├── server.py              # thin launcher for `mcp dev server.py`
 ├── tests/
 ├── .github/workflows/test.yml
 ├── pytest.ini

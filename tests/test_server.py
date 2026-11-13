@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-import server
+import devinsight_mcp as server
 
 
 def test_find_todos_uses_word_boundaries(tmp_path):

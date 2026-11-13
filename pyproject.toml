@@ -10,8 +10,14 @@ dependencies = [
     "mcp[cli]>=1.2.0,<2",
 ]
 
+[project.scripts]
+devinsight-mcp = "devinsight_mcp:main"
+
 [project.urls]
 Repository = "https://github.com/AzalHoseinian/devinsight-mcp"
+
+[tool.setuptools]
+py-modules = ["devinsight_mcp"]
 
 [build-system]
 requires = ["setuptools>=68.0"]
