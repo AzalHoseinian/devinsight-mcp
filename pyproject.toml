@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/AzamHosseinian/devinsight-mcp"
+Repository = "https://github.com/AzalHoseinian/devinsight-mcp"
 
 [build-system]
 requires = ["setuptools>=68.0"]
