@@ -1,5 +1,7 @@
 # DevInsight MCP
 
+<!-- mcp-name: io.github.AzalHoseinian/devinsight-mcp -->
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/devinsight-mcp.svg)](https://pypi.org/project/devinsight-mcp/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](pyproject.toml)

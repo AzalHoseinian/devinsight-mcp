@@ -1,18 +1,19 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.AzalHoseinian/devinsight-mcp",
-  "description": "Inspect, analyze, and grade local Git repositories: language stats, TODO tracking, git history, large-file detection, an overall health score, and tech-stack fingerprinting.",
-  "version": "1.0.0",
+  "title": "DevInsight MCP",
+  "description": "Read-only MCP server to inspect Git repos: code stats, TODOs, commits, health score, tech stack",
   "repository": {
     "url": "https://github.com/AzalHoseinian/devinsight-mcp",
     "source": "github"
   },
+  "version": "1.0.1",
   "packages": [
     {
-      "registry_type": "pypi",
+      "registryType": "pypi",
       "identifier": "devinsight-mcp",
-      "version": "1.0.0",
-      "runtime_hint": "uvx",
+      "version": "1.0.1",
+      "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"
       }
