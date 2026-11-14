@@ -51,3 +51,38 @@ def test_tech_stack_detects_python_and_mcp(tmp_path):
     result = server.tech_stack(str(tmp_path))
     assert "Python" in result["languages"]
     assert "MCP (Model Context Protocol)" in result["frameworks"]
+
+
+def test_tech_stack_does_not_match_package_names_in_unrelated_toml_text(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(
+        '[project]\nname = "example"\n'
+        'description = "upgrade next-generation vite-powered redistribution"\n'
+    )
+    result = server.tech_stack(str(tmp_path))
+    assert result["frameworks"] == []
+    assert result["databases"] == []
+
+
+def test_tech_stack_detects_pyproject_dependencies(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(
+        '[project]\n'
+        'dependencies = ["fastapi>=0.1"]\n'
+        '[project.optional-dependencies]\n'
+        'database = ["psycopg2-binary>=2"]\n'
+    )
+    result = server.tech_stack(str(tmp_path))
+    assert "FastAPI" in result["frameworks"]
+    assert "PostgreSQL" in result["databases"]
+
+
+def test_tech_stack_detects_poetry_dependencies(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(
+        '[tool.poetry.dependencies]\n'
+        'python = "^3.10"\n'
+        'django = "^5.0"\n'
+        '[tool.poetry.group.cache.dependencies]\n'
+        'redis = "^5.0"\n'
+    )
+    result = server.tech_stack(str(tmp_path))
+    assert "Django" in result["frameworks"]
+    assert "Redis" in result["databases"]

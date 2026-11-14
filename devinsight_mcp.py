@@ -30,6 +30,11 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Optional
 
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib
+
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("DevInsight")
@@ -488,6 +493,46 @@ def _match_packages(names: list[str], frameworks: set[str], databases: set[str])
             databases.add(DATABASE_PACKAGE_MAP[key])
 
 
+def _pyproject_dependency_names(data: dict) -> list[str]:
+    names = []
+    project = data.get("project", {})
+    if isinstance(project, dict):
+        dependencies = project.get("dependencies", [])
+        if isinstance(dependencies, list):
+            names.extend(
+                name for name in (
+                    _split_requirement_name(item)
+                    for item in dependencies if isinstance(item, str)
+                )
+                if name
+            )
+        optional_dependencies = project.get("optional-dependencies", {})
+        if isinstance(optional_dependencies, dict):
+            for group in optional_dependencies.values():
+                if isinstance(group, list):
+                    names.extend(
+                        name for name in (
+                            _split_requirement_name(item)
+                            for item in group if isinstance(item, str)
+                        )
+                        if name
+                    )
+
+    tool = data.get("tool", {})
+    poetry = tool.get("poetry", {}) if isinstance(tool, dict) else {}
+    if isinstance(poetry, dict):
+        dependencies = poetry.get("dependencies", {})
+        if isinstance(dependencies, dict):
+            names.extend(dependencies)
+        groups = poetry.get("group", {})
+        if isinstance(groups, dict):
+            for group in groups.values():
+                if isinstance(group, dict) and isinstance(group.get("dependencies"), dict):
+                    names.extend(group["dependencies"])
+
+    return names
+
+
 @mcp.tool()
 def tech_stack(path: str = ".") -> dict:
     """
@@ -566,13 +611,11 @@ def tech_stack(path: str = ".") -> dict:
     pyproject = entries.get("pyproject.toml")
     if pyproject is not None:
         lines = _safe_read_lines(pyproject) or []
-        blob = "".join(lines).lower()
-        for key, tag in FRAMEWORK_PACKAGE_MAP.items():
-            if key in blob:
-                frameworks.add(tag)
-        for key, tag in DATABASE_PACKAGE_MAP.items():
-            if key in blob:
-                databases.add(tag)
+        try:
+            data = tomllib.loads("".join(lines))
+        except tomllib.TOMLDecodeError:
+            data = {}
+        _match_packages(_pyproject_dependency_names(data), frameworks, databases)
 
     return {
         "root": str(root),
