@@ -8,6 +8,7 @@ license = "MIT"
 keywords = ["mcp", "model-context-protocol", "git", "developer-tools", "claude"]
 dependencies = [
     "mcp[cli]>=1.2.0,<2",
+    "tomli>=2.0.1; python_version < '3.11'",
 ]
 
 [project.scripts]

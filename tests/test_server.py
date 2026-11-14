@@ -10,6 +10,12 @@ def test_find_todos_uses_word_boundaries(tmp_path):
     assert tags == ["TODO", "FIXME"]
 
 
+def test_find_todos_returns_empty_for_non_positive_max_results(tmp_path):
+    (tmp_path / "a.py").write_text("# TODO: real\n")
+    assert server.find_todos(str(tmp_path), max_results=0) == []
+    assert server.find_todos(str(tmp_path), max_results=-1) == []
+
+
 def test_repo_health_counts_same_todos(tmp_path):
     (tmp_path / "a.py").write_text("# TODO: real\nTODOS = []\n")
     assert server.repo_health(str(tmp_path))["todo_count"] == 1
@@ -51,3 +57,38 @@ def test_tech_stack_detects_python_and_mcp(tmp_path):
     result = server.tech_stack(str(tmp_path))
     assert "Python" in result["languages"]
     assert "MCP (Model Context Protocol)" in result["frameworks"]
+
+
+def test_tech_stack_does_not_match_package_names_in_unrelated_toml_text(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(
+        '[project]\nname = "example"\n'
+        'description = "upgrade next-generation vite-powered redistribution"\n'
+    )
+    result = server.tech_stack(str(tmp_path))
+    assert result["frameworks"] == []
+    assert result["databases"] == []
+
+
+def test_tech_stack_detects_pyproject_dependencies(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(
+        '[project]\n'
+        'dependencies = ["fastapi>=0.1"]\n'
+        '[project.optional-dependencies]\n'
+        'database = ["psycopg2-binary>=2"]\n'
+    )
+    result = server.tech_stack(str(tmp_path))
+    assert "FastAPI" in result["frameworks"]
+    assert "PostgreSQL" in result["databases"]
+
+
+def test_tech_stack_detects_poetry_dependencies(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(
+        '[tool.poetry.dependencies]\n'
+        'python = "^3.10"\n'
+        'django = "^5.0"\n'
+        '[tool.poetry.group.cache.dependencies]\n'
+        'redis = "^5.0"\n'
+    )
+    result = server.tech_stack(str(tmp_path))
+    assert "Django" in result["frameworks"]
+    assert "Redis" in result["databases"]
