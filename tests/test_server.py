@@ -10,6 +10,12 @@ def test_find_todos_uses_word_boundaries(tmp_path):
     assert tags == ["TODO", "FIXME"]
 
 
+def test_find_todos_returns_empty_for_non_positive_max_results(tmp_path):
+    (tmp_path / "a.py").write_text("# TODO: real\n")
+    assert server.find_todos(str(tmp_path), max_results=0) == []
+    assert server.find_todos(str(tmp_path), max_results=-1) == []
+
+
 def test_repo_health_counts_same_todos(tmp_path):
     (tmp_path / "a.py").write_text("# TODO: real\nTODOS = []\n")
     assert server.repo_health(str(tmp_path))["todo_count"] == 1

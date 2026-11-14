@@ -216,6 +216,8 @@ def find_todos(path: str = ".", max_results: int = 100) -> list[dict]:
     root = Path(path).expanduser().resolve()
     if not root.exists():
         return [{"error": f"Path does not exist: {root}"}]
+    if max_results <= 0:
+        return []
 
     results = []
     for file in _iter_files(root):
